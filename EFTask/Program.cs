@@ -1,24 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+
+using EFTask.Models;
 
 namespace EFTask
 {
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+            using (var db = new SimpleContext())
+            {
+                Console.Write("Enter a name for a new Group: ");
+                var name = Console.ReadLine();
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                var group = new Group { GroupName = name };
+                db.Groups.Add(group);
+                db.SaveChanges();
+
+                var query = from g in db.Groups
+                            orderby g.GroupName
+                            select g;
+
+                Console.WriteLine("All Groups in the database:");
+                foreach (var item in query)
+                {
+                    Console.WriteLine(item.GroupName);
+                }
+
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadKey();
+            }
+            //string connection = @"Data Source=(localdb)\v11.0;Initial Catalog=newDB;Integrated Security=True";
+        }
     }
 }
