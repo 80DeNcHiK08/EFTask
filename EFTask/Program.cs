@@ -19,7 +19,7 @@ namespace EFTask
 
                 var group = new Group { GroupName = name };
                 db.Groups.Add(group);
-                db.SaveChanges();
+                db.SaveChangesAsync();
 
                 var query = from g in db.Groups
                             orderby g.GroupName

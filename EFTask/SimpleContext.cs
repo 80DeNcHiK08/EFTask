@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity;
+
 
 using EFTask.Models;
 
@@ -21,6 +17,13 @@ namespace EFTask
 
         public DbSet<Group> Groups { get; set; }
         public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>().Property(p => p.FirstNane).HasMaxLength(20);
+            modelBuilder.Entity<User>().Property(p => p.LastName).HasMaxLength(20);
+            modelBuilder.Entity<User>().Property(p => p.FirstNane).IsRequired();
+        }
     }
 
     class MyContextInitializer : DropCreateDatabaseAlways<SimpleContext>
@@ -57,7 +60,7 @@ namespace EFTask
             db.Groups.Add(g2);
             db.Groups.Add(g3);
             db.Groups.Add(g4);
-            db.SaveChanges();
+            db.SaveChangesAsync();
         }
     }
 }
